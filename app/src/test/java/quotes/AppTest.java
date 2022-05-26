@@ -4,11 +4,57 @@
 package quotes;
 
 import org.junit.jupiter.api.Test;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
-    @Test void arrayListReturnsJsonObjectSizeTest() {
+    @Test void returnsTrueReaderIsReady()throws IOException {
+        App sut = new App();
+        FileReader reader = sut.readerFile("src/test/resources/recentquotes.json");
+        assertTrue(reader.ready(), "Stream is ready to read");
     }
-    @Test void quoteTest(){
+    @Test void returnsCorrectArraySize() throws IOException {
+        App sut = new App();
+        FileReader reader = sut.readerFile("src/test/resources/recentquotes.json");
+        ArrayList<Quote> quoteArray = sut.createQuoteArray(reader);
+        assertEquals(138, quoteArray.size());
+    }
+
+    @Test
+    void returnedQuoteNotNull() throws IOException {
+        App sut = new App();
+        FileReader reader = sut.readerFile("src/test/resources/recentquotes.json");
+        ArrayList<Quote> quoteArray = sut.createQuoteArray(reader);
+        String response = sut.getRandomQuoteOffline(quoteArray);
+        assertNotNull(response);
+    }
+
+    @Test
+    void returnResponseCode() throws IOException {
+        App sut = new App();
+        HttpURLConnection urlConn = sut.createRequest("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en");
+        assertEquals(200, urlConn.getResponseCode());
+    }
+
+    @Test
+    void returnsLengthOfContent() throws IOException {
+        App sut = new App();
+        HttpURLConnection urlConn = sut.createRequest("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en");
+        StringBuffer content = sut.readResponse(urlConn);
+        assertTrue(content.length() > 0);
+    }
+
+    @Test
+    void returnsTrueIfAuthor() throws IOException {
+        App sut = new App();
+        HttpURLConnection urlConn = sut.createRequest("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en");
+        StringBuffer content = sut.readResponse(urlConn);
+        QuoteForis quote = sut.parseQuoteFromForis(content);
+        assertTrue(quote.quoteText.length() > 0);
     }
 }
