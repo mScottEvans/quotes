@@ -5,6 +5,7 @@ package quotes;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import io.github.pixee.security.BoundedLineReader;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -64,7 +65,7 @@ public class App {
         )){
             String input;
             StringBuffer content = new StringBuffer();
-            while((input = response.readLine()) != null){
+            while((input = BoundedLineReader.readLine(response, 5_000_000)) != null){
                 content.append(input);
             }
             return content;
