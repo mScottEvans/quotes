@@ -5,6 +5,8 @@ package quotes;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -52,7 +54,7 @@ public class App {
     }
 
     public static HttpURLConnection createRequest(String _url) throws IOException{
-        URL url = new URL(_url);
+        URL url = Urls.create(_url, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
         urlConn.setRequestMethod("GET");
         return urlConn;
