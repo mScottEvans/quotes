@@ -10,6 +10,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
@@ -46,7 +47,7 @@ public class App {
     }
 
     public static String getRandomQuoteOffline(ArrayList<Quote> list){
-        Random random = new Random();
+        Random random = new SecureRandom();
         int n = random.nextInt(138);
         return list.get(n).author + "\n" + list.get(n).text;
     }
